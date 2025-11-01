@@ -43,8 +43,33 @@ export const signUp = async (req, res) => {
             );
     }
 };
-export const signIn = (req, res) => {
-    res.send("sign in");
+export const signIn = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        if (!email || !password) {
+            return res
+                .status(400)
+                .json(new ApiError(400, "All fields are required."));
+        }
+
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res
+                .status(400)
+                .json(new ApiError(404, "User with this email doesnot exist."));
+        }
+
+        const isPasswordCorrect = await user.isPasswordCorrect(password);
+
+        if (!isPasswordCorrect) {
+            return res.status(401).json(new ApiError(401, "Invalid Password."));
+        }
+
+
+        
+    } catch (error) {}
 };
 export const signOut = (req, res) => {
     res.send("sign out");
