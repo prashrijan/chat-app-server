@@ -95,7 +95,7 @@ export const signIn = async (req, res) => {
         return res.status(500).json(new ApiError(500, "Internal Server Error"));
     }
 };
-export const signOut = (req, res) => {
+export const signOut = (_, res) => {
     try {
         res.cookie("jwt", "", {
             maxAge: 0,
@@ -141,6 +141,16 @@ export const updateProfilePic = async (req, res) => {
             );
     } catch (error) {
         console.log("Error updating the profile picture");
+        return res.status(500).json(new ApiError(500, "Internal Server Error"));
+    }
+};
+export const checkAuth = (req, res) => {
+    try {
+        return res
+            .status(200)
+            .json(new ApiResponse(200, req.user, "User Authorised"));
+    } catch (error) {
+        console.log("Error in check auth controller: ", error);
         return res.status(500).json(new ApiError(500, "Internal Server Error"));
     }
 };
