@@ -7,4 +7,7 @@ export const config = {
     port: process.env.PORT,
     jwtSecret: process.env.JWT_SECRET,
     nodeEnv: process.env.NODE_ENV,
+    cloudinaryCloudNmae: process.env.CLOUDINARY_CLOUD_NAME,
+    cloudinaryApiKey: process.env.CLOUDINARY_API_KEY,
+    cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET,
 };

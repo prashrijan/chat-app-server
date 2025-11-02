@@ -2,6 +2,7 @@ import { User } from "../models/user.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
 import { generateToken } from "../utils/utils.js";
+import cloudinary from "../libs/cloudinary.js";
 
 export const signUp = async (req, res) => {
     try {
@@ -108,7 +109,38 @@ export const signOut = (req, res) => {
         return res.status(500).json(new ApiError(500, "Internal Server Error"));
     }
 };
-export const updateProfilePic = (req, res) => {
+export const updateProfilePic = async (req, res) => {
     try {
-    } catch (error) {}
+        const { profilePic } = req.body;
+        const userId = req.user._id;
+
+        if (!profilePic) {
+            return res
+                .status(400)
+                .json(new ApiError(400, "Profile Pic is required"));
+        }
+
+        const uploadRes = await cloudinary.uploader.upload(profilePic);
+
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            {
+                profilePic: uploadRes.secure_url,
+            },
+            { new: true }
+        );
+
+        return res
+            .status(200)
+            .json(
+                new ApiResponse(
+                    200,
+                    updatedUser,
+                    "Profile Pic successfully updated"
+                )
+            );
+    } catch (error) {
+        console.log("Error updating the profile picture");
+        return res.status(500).json(new ApiError(500, "Internal Server Error"));
+    }
 };
