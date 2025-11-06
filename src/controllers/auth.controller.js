@@ -111,6 +111,7 @@ export const signOut = (_, res) => {
 };
 export const updateProfilePic = async (req, res) => {
     try {
+        console.log(req.body);
         const { profilePic } = req.body;
         const userId = req.user._id;
 
@@ -140,7 +141,7 @@ export const updateProfilePic = async (req, res) => {
                 )
             );
     } catch (error) {
-        console.log("Error updating the profile picture");
+        console.log("Error updating the profile picture: ", error);
         return res.status(500).json(new ApiError(500, "Internal Server Error"));
     }
 };
