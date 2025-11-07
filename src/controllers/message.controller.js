@@ -3,6 +3,7 @@ import { Message } from "../models/messages.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import cloudinary from "../libs/cloudinary.js";
+import { getReceiverSocketId, io } from "../libs/socket.js";
 
 export const getUsersForSidebar = async (req, res) => {
     try {
@@ -86,7 +87,15 @@ export const sendMessage = async (req, res) => {
             image,
         });
 
+        await newMessage.save();
+
         // TODO: real time functionality goes here
+
+        const receiverSocketId = getReceiverSocketId(receiverId);
+
+        if (receiverSocketId) {
+            io.to(receiverSocketId).emit("newMessage", newMessage);
+        }
 
         return res
             .status(201)

@@ -5,8 +5,8 @@ import { connectDb } from "./src/db/db.config.js";
 import { config } from "./src/config/conf.config.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import { app, server } from "./src/libs/socket.js";
 
-const app = express();
 const port = config.port;
 
 app.use(
@@ -25,7 +25,7 @@ app.use(
 app.use("/api/auth", authRouter);
 app.use("/api/messages", messageRouter);
 
-app.listen(port, () => {
+server.listen(port, () => {
     console.log("server is running on port ", port);
     connectDb();
 });
